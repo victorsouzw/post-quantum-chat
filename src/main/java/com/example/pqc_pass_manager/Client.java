@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Base64;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +16,8 @@ import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPrivateKeyParameters;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPublicKeyParameters;
+import org.bouncycastle.util.encoders.Base64;
+
 @Getter
 @Setter
 public class Client {
@@ -31,7 +31,7 @@ public class Client {
         final int PORT = 12345;
 
         try (Socket socket = new Socket(HOST, PORT)) {
-            System.out.println("Connected to server. Just type to send messages.");
+
 
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
@@ -55,12 +55,14 @@ public class Client {
                         KyberPrivateKeyParameters privParameters = (KyberPrivateKeyParameters) keyPair.getPrivate();
 
                         setSecret(Crypto.extractSecretFromEcanpsulatedSecret(secretWithEncap, privParameters));
-
-                        System.out.println("Secret Armazenado: " + Base64.getEncoder().encodeToString(getSecret()));
+                        // Na realidade isso eh os byte[] do secret with encap, nao o segredo encapsuado em si
+                        // Mas serve para demonstracao
+                        System.out.println("Secret encapsulado recebido: " + Base64.toBase64String(secretWithEncap));
+                        System.out.println("Secret Armazenado: " + Base64.toBase64String(getSecret()));
                         break;
                     }
                 }
-            }
+            }System.out.println("\n \n Conectado ao servidor. Segredo compartilhado estabelecido. Digite para trocar mensagens.");
             while (true) {
 
                 if (consoleInput.ready()) {
@@ -68,7 +70,6 @@ public class Client {
 
                     Gson gson = new Gson();
                     output.println(gson.toJson(new Message(Crypto.encrypt(getSecret(), clientMessage.getBytes()))));
-                    //output.println(clientMessage);
                 }
 
                 if (input.ready()) {
@@ -76,8 +77,8 @@ public class Client {
                     Gson gson = new Gson();
                     Message cihperedMessage = gson.fromJson(serverMessage, Message.class);
                     serverMessage = new String(Crypto.decrypt(getSecret(), cihperedMessage.getMessage()));
-                    System.out.println("Server cifrada:" + org.bouncycastle.util.encoders.Base64.toBase64String(cihperedMessage.getMessage()));
-                    System.out.println("Server decifrada:" + serverMessage);
+                    System.out.println("Server cifrada: " + Base64.toBase64String(cihperedMessage.getMessage()));
+                    System.out.println("Server decifrada: " + serverMessage);
                 }
 
             }

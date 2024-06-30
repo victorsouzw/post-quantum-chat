@@ -27,10 +27,6 @@ import org.bouncycastle.pqc.crypto.frodo.FrodoPublicKeyParameters;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
-import javax.crypto.*;
-import javax.crypto.spec.SecretKeySpec;
 
 
 

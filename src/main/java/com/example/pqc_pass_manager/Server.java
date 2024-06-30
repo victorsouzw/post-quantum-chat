@@ -27,7 +27,7 @@ public class Server {
             ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is listening on port " + PORT);
             Socket socket = serverSocket.accept();
-            System.out.println("Client connected. Just type to send messages.");
+
 
             BufferedReader input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter output = new PrintWriter(socket.getOutputStream(), true);
@@ -41,23 +41,25 @@ public class Server {
                     clientMessage = input.readLine();
                     Gson gson = new Gson();
                     Message message = gson.fromJson(clientMessage, Message.class);
-                    System.out.println("Chave recebida do client: " + message.getMessage());
+                    System.out.println("Chave publica recebida do client: " + Base64.toBase64String(message.getMessage()));
                     SecretWithEncapsulation secretWithEncapsulation = Crypto.getSecretWithEncapsulationFromPublicKeyByteArray(message.getMessage());
                     this.setSecret(secretWithEncapsulation.getSecret());
-                    System.out.println("\n Secret enviado e armazenado: " + secretWithEncapsulation.getSecret());
+                    System.out.println("\nSecret enviado e armazenado: " + Base64.toBase64String(secretWithEncapsulation.getSecret()));
                     //Envia segredo encapsulado
                     String secretWithEncapsulationJson = gson.toJson(new Message(secretWithEncapsulation.getEncapsulation()));
                     output.println(secretWithEncapsulationJson);
                     this.setFirstMessage(false);
                 }
             }
+
+            System.out.println("\n \n Cliente conectado. Segredo compartilhado estabelecido. Digite para trocar mensagens.");
             while (true) {
                 if (input.ready()) {
                     clientMessage = input.readLine();
                     Gson gson = new Gson();
                     Message cihperedMessage = gson.fromJson(clientMessage, Message.class);
                     clientMessage = new String(Crypto.decrypt(getSecret(), cihperedMessage.getMessage()));
-                    System.out.println("Client cifrada:" + Base64.toBase64String(cihperedMessage.getMessage()));
+                    System.out.println("Client cifrada: " + Base64.toBase64String(cihperedMessage.getMessage()));
                     System.out.println("Client decifrada: " + clientMessage);
                 }
 
@@ -65,7 +67,6 @@ public class Server {
                     serverMessage = consoleInput.readLine();
                     Gson gson = new Gson();
                     output.println(gson.toJson(new Message(Crypto.encrypt(getSecret(), serverMessage.getBytes()))));
-                    //output.println("Server: " + serverMessage);
                 }
             }
 

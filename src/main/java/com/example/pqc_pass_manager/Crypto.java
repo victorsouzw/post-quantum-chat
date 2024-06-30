@@ -1,14 +1,8 @@
 package com.example.pqc_pass_manager;
 
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
-import com.google.gson.Gson;
-import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
-import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPublicKeyParameters;
-import org.bouncycastle.pqc.crypto.util.PublicKeyFactory;
-import org.bouncycastle.pqc.crypto.crystals.kyber.*;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberKEMExtractor;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberKEMGenerator;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberKeyGenerationParameters;
@@ -20,8 +14,6 @@ import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPrivateKeyParameters;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
-
-import static org.bouncycastle.pqc.crypto.frodo.FrodoParameters.frodokem640aes;
 
 public class Crypto {
 
