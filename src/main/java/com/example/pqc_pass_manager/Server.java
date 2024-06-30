@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
+import org.bouncycastle.util.encoders.Base64;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,12 +57,18 @@ public class Server {
             while (true) {
                 if (input.ready()) {
                     clientMessage = input.readLine();
-                    System.out.println("Client: " + clientMessage);
+                    Gson gson = new Gson();
+                    Message cihperedMessage = gson.fromJson(clientMessage, Message.class);
+                    clientMessage = new String(Crypto.decrypt(getSecret(), cihperedMessage.getMessage()));
+                    System.out.println("Client cifrada:" + Base64.toBase64String(cihperedMessage.getMessage()));
+                    System.out.println("Client decifrada: " + clientMessage);
                 }
 
                 if (consoleInput.ready()) {
                     serverMessage = consoleInput.readLine();
-                    output.println("Server: " + serverMessage);
+                    Gson gson = new Gson();
+                    output.println(gson.toJson(new Message(Crypto.encrypt(getSecret(), serverMessage.getBytes()))));
+                    //output.println("Server: " + serverMessage);
                 }
             }
 
@@ -69,6 +76,8 @@ public class Server {
     IOException ex) {
         System.out.println("Server exception: " + ex.getMessage());
         ex.printStackTrace();
+    } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
-}
 }

@@ -17,7 +17,8 @@ import org.bouncycastle.pqc.crypto.crystals.kyber.KyberParameters;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPrivateKeyParameters;
 
 
-
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import java.security.SecureRandom;
 
 import static org.bouncycastle.pqc.crypto.frodo.FrodoParameters.frodokem640aes;
@@ -45,5 +46,19 @@ public class Crypto {
         byte[] recipientSecret = frodoDecCipher.extractSecret(encapsulatedSecret);
         return recipientSecret;
 
+    }
+
+    public static byte[] encrypt(byte[] key, byte[] data) throws Exception {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+        return cipher.doFinal(data);
+    }
+
+    public static byte[] decrypt(byte[] key, byte[] data) throws Exception {
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
+        Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
+        return cipher.doFinal(data);
     }
 }

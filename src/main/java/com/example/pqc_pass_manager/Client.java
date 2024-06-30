@@ -69,12 +69,19 @@ public class Client {
 
                 if (consoleInput.ready()) {
                     clientMessage = consoleInput.readLine();
-                    output.println(clientMessage);
+
+                    Gson gson = new Gson();
+                    output.println(gson.toJson(new Message(Crypto.encrypt(getSecret(), clientMessage.getBytes()))));
+                    //output.println(clientMessage);
                 }
 
                 if (input.ready()) {
                     serverMessage = input.readLine();
-                    System.out.println(serverMessage);
+                    Gson gson = new Gson();
+                    Message cihperedMessage = gson.fromJson(serverMessage, Message.class);
+                    serverMessage = new String(Crypto.decrypt(getSecret(), cihperedMessage.getMessage()));
+                    System.out.println("Server cifrada:" + org.bouncycastle.util.encoders.Base64.toBase64String(cihperedMessage.getMessage()));
+                    System.out.println("Server decifrada:" + serverMessage);
                 }
 
             }
@@ -82,6 +89,8 @@ public class Client {
             System.out.println("Server not found: " + ex.getMessage());
         } catch (IOException ex) {
             System.out.println("I/O error: " + ex.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
 

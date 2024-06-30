@@ -2,6 +2,7 @@ package com.example.post_quantum_chat;
 
 
 
+import com.example.pqc_pass_manager.Crypto;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 import org.bouncycastle.crypto.SecretWithEncapsulation;
 
@@ -69,7 +70,7 @@ class PostQuantumChatApplicationTests {
 		byte[] initiatorSharedSecret = secretWithEncapsulation.getSecret();
 
 		//O segredo compartilhado está sendo utilizado para cifrar mensagems com o AES
-		byte[] encMessage = Base64.encode(encrypt(initiatorSharedSecret, "Mensagem teste".getBytes()));
+		byte[] encMessage = Base64.encode(Crypto.encrypt(initiatorSharedSecret, "Mensagem teste".getBytes()));
 
 		//Com o encapsulamento do segredo compartilhado, podemos agora desencapsular o segredo na outra ponta
 		//Para isso basta instanciar o FrodoKEMExtractor com a chave privada correspondente e extrair o segredo compartilhado
@@ -78,7 +79,7 @@ class PostQuantumChatApplicationTests {
 		byte[] recipientSecret = frodoDecCipher.extractSecret(encapSharedSecret);
 
 		// Com o segredo compartilhado em mãos, podemos decifrar a mensagem
-		String decMessage = new String(decrypt(recipientSecret, Base64.decode(encMessage)));
+		String decMessage = new String(Crypto.decrypt(recipientSecret, Base64.decode(encMessage)));
 
 		System.out.println("Segredo compartilhado gerado na ponta A: " + Hex.toHexString(initiatorSharedSecret));
 		System.out.println("Segredo compartilhado gerado na ponta B: " + Hex.toHexString(recipientSecret));
@@ -104,7 +105,7 @@ class PostQuantumChatApplicationTests {
 		byte[] initiatorSharedSecret = secretWithEncapsulation.getSecret();
 
 		//O segredo compartilhado está sendo utilizado para cifrar mensagems com o AES
-		byte[] encMessage = Base64.encode(encrypt(initiatorSharedSecret, "Mensagem teste".getBytes()));
+		byte[] encMessage = Base64.encode(Crypto.encrypt(initiatorSharedSecret, "Mensagem teste".getBytes()));
 
 		//Com o encapsulamento do segredo compartilhado, podemos agora desencapsular o segredo na outra ponta
 		//Para isso basta instanciar o FrodoKEMExtractor com a chave privada correspondente e extrair o segredo compartilhado
@@ -113,7 +114,7 @@ class PostQuantumChatApplicationTests {
 		byte[] recipientSecret = frodoDecCipher.extractSecret(encapSharedSecret);
 
 		// Com o segredo compartilhado em mãos, podemos decifrar a mensagem
-		String decMessage = new String(decrypt(recipientSecret, Base64.decode(encMessage)));
+		String decMessage = new String(Crypto.decrypt(recipientSecret, Base64.decode(encMessage)));
 
 		System.out.println("Segredo compartilhado gerado na ponta A: " + Hex.toHexString(initiatorSharedSecret));
 		System.out.println("Segredo compartilhado gerado na ponta B: " + Hex.toHexString(recipientSecret));
@@ -124,19 +125,7 @@ class PostQuantumChatApplicationTests {
 
 	}
 
-	private static byte[] encrypt(byte[] key, byte[] data) throws Exception {
-		SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-		return cipher.doFinal(data);
-	}
 
-	private static byte[] decrypt(byte[] key, byte[] data) throws Exception {
-		SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-		Cipher cipher = Cipher.getInstance("AES");
-		cipher.init(Cipher.DECRYPT_MODE, secretKeySpec);
-		return cipher.doFinal(data);
-	}
 
 //	Gson gson = new Gson();
 //	var gsonkey = gson.toJson(keyPair.getPublic());
