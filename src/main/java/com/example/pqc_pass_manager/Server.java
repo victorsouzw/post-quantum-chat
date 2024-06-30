@@ -35,19 +35,16 @@ public class Server {
 
             String clientMessage;
             String serverMessage;
-            System.out.println("Versão nova 2!");
             while (firstMessage) {
-                System.out.println("ENTREI ANTES SERVER");
                 if (input.ready()) {
-                    System.out.println("ENTREI AQ SERVER");
                     //Recebe a chave publica
                     clientMessage = input.readLine();
                     Gson gson = new Gson();
                     Message message = gson.fromJson(clientMessage, Message.class);
-                    System.out.println("Client1: " + message.getMessage());
+                    System.out.println("Chave recebida do client: " + message.getMessage());
                     SecretWithEncapsulation secretWithEncapsulation = Crypto.getSecretWithEncapsulationFromPublicKeyByteArray(message.getMessage());
                     this.setSecret(secretWithEncapsulation.getSecret());
-                    System.out.println("\n \n Secret: " + secretWithEncapsulation.getSecret());
+                    System.out.println("\n Secret enviado e armazenado: " + secretWithEncapsulation.getSecret());
                     //Envia segredo encapsulado
                     String secretWithEncapsulationJson = gson.toJson(new Message(secretWithEncapsulation.getEncapsulation()));
                     output.println(secretWithEncapsulationJson);

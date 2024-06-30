@@ -125,14 +125,6 @@ class PostQuantumChatApplicationTests {
 
 	}
 
-
-
-//	Gson gson = new Gson();
-//	var gsonkey = gson.toJson(keyPair.getPublic());
-//
-//	InputStream key = gson.fromJson(gsonkey, InputStream.class);
-//	AsymmetricKeyParameter asypublicKey = PublicKeyFactory.createKey(key);
-
 	@Test
 	public void instatianteKyberPublicKeyFromByteArrayTest() throws Exception {
 		KyberKeyGenerationParameters genParam = new KyberKeyGenerationParameters(new SecureRandom(), KyberParameters.kyber768);

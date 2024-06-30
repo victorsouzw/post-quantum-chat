@@ -39,12 +39,9 @@ public class Client {
 
             String clientMessage;
             String serverMessage;
-            System.out.println("Antessssssssssss");
             if (firstMessage) {
                 // Enviar a chave pública em byte[]
-                System.out.println("Antes");
                 this.setKeyPair(Crypto.genKeyPair());
-                System.out.println("Depois");
                 KyberPublicKeyParameters publicKeyParameters = (KyberPublicKeyParameters) keyPair.getPublic();
                 byte[] message = publicKeyParameters.getEncoded();
                 Gson gson = new Gson();
@@ -59,12 +56,11 @@ public class Client {
 
                         setSecret(Crypto.extractSecretFromEcanpsulatedSecret(secretWithEncap, privParameters));
 
-                        System.out.println("SECRETTTT ARMAZENDO: " + Base64.getEncoder().encodeToString(getSecret()));
+                        System.out.println("Secret Armazenado: " + Base64.getEncoder().encodeToString(getSecret()));
                         break;
                     }
                 }
             }
-            System.out.println("Até aqui foi");
             while (true) {
 
                 if (consoleInput.ready()) {
