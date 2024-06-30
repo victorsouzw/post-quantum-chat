@@ -1,7 +1,8 @@
 ### Sobre a aplicação
-- A aplicação simula um chat com cifra post-quantum ponta a ponta.
+- A aplicação simula um chat com criptografia post-quantum ponta a ponta.
 - A comunicação eh realizada via socket cliente servidor, é projetada para atender apenas dois usuários, 
-- Visa pura e unicamente a demonstração da aplicação de KEMs, ilustrando uma criptografia ponta a ponta resistente a ataques quânticos. 
+- Visa pura e unicamente a demonstração de uma aplicação com KEMs, ilustrando uma criptografia ponta a ponta resistente a ataques quânticos. 
+- Os testes também contam com a utilização do FrodoKEM e mais outro KEM disponibilizado pelo BouncyCastle 
 
 ### Sobre a criptografia
 - Cliente gera par de chaves e envia chave publica para o servidor.
