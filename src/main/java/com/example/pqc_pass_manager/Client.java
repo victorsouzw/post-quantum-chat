@@ -9,11 +9,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Base64;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.bouncycastle.crypto.AsymmetricCipherKeyPair;
 
+import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPrivateKeyParameters;
 import org.bouncycastle.pqc.crypto.crystals.kyber.KyberPublicKeyParameters;
 @Getter
 @Setter
@@ -21,6 +24,7 @@ public class Client {
     //socket client, sera o usuario A
     private boolean firstMessage = true;
     private AsymmetricCipherKeyPair keyPair;
+    private byte[] secret;
 
     public void run() {
         final String HOST = "localhost";
@@ -45,6 +49,20 @@ public class Client {
                 byte[] message = publicKeyParameters.getEncoded();
                 Gson gson = new Gson();
                 output.println(gson.toJson(new Message(message)));
+                firstMessage = false;
+                //Aguarda receber o segredo encapsulado
+                while (true) {
+                    if (input.ready()) {
+                        serverMessage = input.readLine();
+                        byte [] secretWithEncap = gson.fromJson(serverMessage, Message.class).getMessage();
+                        KyberPrivateKeyParameters privParameters = (KyberPrivateKeyParameters) keyPair.getPrivate();
+
+                        setSecret(Crypto.extractSecretFromEcanpsulatedSecret(secretWithEncap, privParameters));
+
+                        System.out.println("SECRETTTT ARMAZENDO: " + Base64.getEncoder().encodeToString(getSecret()));
+                        break;
+                    }
+                }
             }
             System.out.println("Até aqui foi");
             while (true) {
