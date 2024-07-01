@@ -18,7 +18,6 @@ import java.security.SecureRandom;
 public class Crypto {
 
     public static AsymmetricCipherKeyPair genKeyPair() {
-
         KyberKeyGenerationParameters genParam = new KyberKeyGenerationParameters(new SecureRandom(), KyberParameters.kyber768);
         KyberKeyPairGenerator keyPairGenerator = new KyberKeyPairGenerator();
         keyPairGenerator.init(genParam);
@@ -34,8 +33,8 @@ public class Crypto {
     }
 
     public static byte[] extractSecretFromEcanpsulatedSecret(byte[] encapsulatedSecret, KyberPrivateKeyParameters privParameters) {
-        KyberKEMExtractor frodoDecCipher = new KyberKEMExtractor(privParameters);
-        byte[] recipientSecret = frodoDecCipher.extractSecret(encapsulatedSecret);
+        KyberKEMExtractor kyberDecCipher = new KyberKEMExtractor(privParameters);
+        byte[] recipientSecret = kyberDecCipher.extractSecret(encapsulatedSecret);
         return recipientSecret;
 
     }
